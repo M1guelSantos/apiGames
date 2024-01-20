@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require("cors")
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -30,21 +32,21 @@ var DB = {
 }
 
 app.get("/games", (req, res) => {
-    res.statusCode = 202;
     res.json(DB.games);
-});
+    res.status(200);
+})
 
 app.get("/game/:id", (req, res) => {
     if (isNaN(req.params.id)) {
         res.sendStatus(400);
     } else {
-        var id = req.params.id; // Convertendo de texto para INT
-        var game = DB.games.find(g => g.id == id);
-        if (game != undefined) {
+        var id = req.params.id
+        var game = DB.games.find(g => g.id == id)
+        if(game != undefined){
+            res.json(game)
             res.sendStatus(200);
-            res.json(game);
-        } else {
-            res.sendStatus(404);
+        }else{
+            res.sendStatus(400)
         }
     }
 })
@@ -60,6 +62,7 @@ app.post("/game", (req, res) => {
     })
     res.sendStatus(200);
 })
+
 app.delete("/game/:id", (req, res) => {
     if (isNaN(req.params.id)) {
         res.sendStatus(400);
